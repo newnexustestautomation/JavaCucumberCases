@@ -4,6 +4,8 @@ import cucumber.api.PendingException;
 import cucumber.api.java.nl.Als;
 import cucumber.api.java.nl.Dan;
 import cucumber.api.java.nl.En;
+import database.acties.DatabaseActiesOld;
+import org.junit.Assert;
 
 /**
  * Created by Tester on 3/28/2017.
@@ -32,8 +34,8 @@ public class CursusSteps {
 
     @Dan("^komen mijn gegevens in de database$")
     public void komenMijnGegevensInDeDatabase() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        DatabaseActiesOld dbActies= new DatabaseActiesOld();
+        //Assert.assertTrue(dbActies.accountAanwezig());
     }
 
     @En("^kan ik inloggen$")
