@@ -8,7 +8,7 @@ Case 1: GIT Project binnenhalen<br />
         - Open een project.
 Case 2: Richt een POM file in voor het cucumber project<br />
 Case 3: Feature file. Maak een eenvoudig scenario<br />
-Case 4: Maken van steps met eenvoudige code<br />
+Case 4: Maken van nl.newnexus.steps met eenvoudige code<br />
 Case 5: WebDriver installeren en gebruiken in een step<br />
 Case 6: Installeren en eenvoudige query toevoegen aan step<br />
 Case 7: Abstract scenario toevoegen<br />
