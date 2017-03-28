@@ -6,8 +6,8 @@ Functionaliteit: Account aanmaken op de webshop
 
     Gegeven het scherm ‘account aanmaken’ zichtbaar is
 
-    Als ik een accountgegevens invul voor "John" "tester", "24-08-1978" en "test@test.nl" met een standaard adres
-    En het password met “test123”
+    Als ik een accountgegevens invul voor "John" "tester", "08/24/1978" en "test@test.nl" met een standaard adres
+    En het password met "test123"
     En als ik op de knop ‘aanmaken' klik
 
     Dan komen mijn gegevens in de database

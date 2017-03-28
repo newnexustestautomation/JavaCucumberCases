@@ -15,16 +15,23 @@ public class mainPage {
     @FindBy(id="bodyContent")
     private WebElement content;
 
+    @FindBy(linkText = "create an account")
+    private WebElement createAccount;
+
     public mainPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
 
+    public void GoToCreateAnAccount() {
+        this.createAccount.click();
+    }
+
     public Boolean wordtPaginaGetoond() {
 
-        String text = content.getText()
+        String text = content.getText().toLowerCase();
 
-        if (content.getText().toLowerCase().contains("welcome to new nexus"))
+        if (text.contains("welcome to newnexus"))
             return true;
         else
             return false;
