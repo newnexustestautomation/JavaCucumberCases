@@ -1,4 +1,4 @@
-package database.entiteiten;
+package nl.newnexus.database.entiteiten;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

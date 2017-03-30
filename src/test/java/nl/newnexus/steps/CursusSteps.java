@@ -8,6 +8,7 @@ import cucumber.api.java.nl.Als;
 import cucumber.api.java.nl.Dan;
 import cucumber.api.java.nl.En;
 import cucumber.api.java.nl.Gegeven;
+import nl.newnexus.database.acties.DatabaseActies;
 import nl.newnexus.pages.createAccount;
 import nl.newnexus.pages.mainPage;
 import org.junit.Assert;
@@ -17,9 +18,17 @@ import org.junit.Assert;
  */
 public class CursusSteps  extends Steps{
 
+    private String emailadres = "";
+    private DatabaseActies dbActies;
+
     @Before
     public void Start() {
         initDriver();
+        dbActies = DatabaseActies.getInstance();
+        if(!dbActies.valid) {
+            dbActies.init();
+        }
+
     }
 
     @After
@@ -34,6 +43,7 @@ public class CursusSteps  extends Steps{
         createAccount create = new createAccount(this.getDriver());
         Assert.assertEquals("",true,create.wordtPaginaGetoond());
         Assert.assertEquals("",true,create.vulAccountInformatieIn(arg0,arg1,arg2,arg3));
+        this.emailadres = arg3;
     }
 
 
@@ -46,8 +56,7 @@ public class CursusSteps  extends Steps{
 
     @Dan("^komen mijn gegevens in de database$")
     public void komenMijnGegevensInDeDatabase() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new PendingException();
+        Assert.assertTrue(dbActies.accountAanwezig(this.emailadres));
     }
 
     @En("^kan ik inloggen$")
