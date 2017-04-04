@@ -1,6 +1,7 @@
 package nl.newnexus.database.acties;
 
-import nl.newnexus.database.entiteiten.Customers;
+import nl.newnexus.database.entiteiten.*;
+import org.hibernate.jpa.HibernateEntityManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,8 +25,6 @@ public class DatabaseActies {
         return true;
     }
 
-
-
     public static DatabaseActies getInstance() {
         if(ourInstance==null)
             ourInstance = new DatabaseActies();
@@ -37,11 +36,12 @@ public class DatabaseActies {
             System.out.println("Geen databaseconnectie gemaakt (aanroepen init!)");
             return false;
         }
-        Customers customers = new Customers();
-            Query query = em.createNativeQuery("select count(c) from Customers c where c.customersEmailAddress = '"+ email+"'" );
-        if((Integer)query.getResultList().get(0)>=1)
+        Query query = em.createQuery("select count(c) from Customers c where c.customersEmailAddress = '"+ email+"'" );
+        if((Integer)  query.getResultList().size()>=1) {
+            System.out.println("\nMomenteel zijn er "+(Integer)  query.getResultList().size()+" accounts met emailadres "+email+ " in de database!");
             return true;
-        return false;
+        }
+            return false;
     }
 
 }
