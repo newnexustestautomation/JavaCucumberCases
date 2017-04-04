@@ -1,15 +1,13 @@
 package nl.newnexus.database.entiteiten;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
  * Created by Tester on 3/28/2017.
  */
 @Entity
+@Table(name="customers")
 public class Customers {
     private int customersId;
     private String customersGender;
