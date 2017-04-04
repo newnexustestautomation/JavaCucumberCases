@@ -1,10 +1,14 @@
 package nl.newnexus.steps;
 
 import cucumber.api.Scenario;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariDriver;
 
 
 import java.util.concurrent.TimeUnit;
@@ -17,6 +21,7 @@ public class Steps
 {
 
     protected static WebDriver driver;
+    private static String browserType = "chhrome";
 
     public Steps()
     {
@@ -28,20 +33,48 @@ public class Steps
         destroyDriver(scenario);
     }
 
+
     protected void initDriver()
     {
+        if (browserType.equalsIgnoreCase("chrome")) {
 
-        System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
+            if (driver == null  ) {
+                System.setProperty("webdriver.chrome.driver", "drivers//chromedriver.exe");
+                driver = new ChromeDriver();
+                driver.manage().timeouts()     .implicitlyWait(5, TimeUnit.SECONDS)
+                        .pageLoadTimeout(30, TimeUnit.SECONDS)
+                        .setScriptTimeout(30, TimeUnit.SECONDS);
+                driver.manage().deleteAllCookies();
+            }
 
-        if (driver == null  ) {
-            driver = new ChromeDriver();
-            driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
-            driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
-            driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
-            driver.manage().deleteAllCookies();
-            driver.manage().window().maximize();
+        } else if (browserType.equalsIgnoreCase("ie")) {
+
+            DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
+            capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+            capabilities.setCapability("requireWindowFocus", true);
+
+            if (driver == null)
+            {
+                System.setProperty("webdriver.ie.driver", "drivers//iedriverserver.exe");
+                driver = new InternetExplorerDriver(capabilities);
+
+            }
+
+
+        } else if (browserType.equalsIgnoreCase("firefox")) {
+
+
+        } else if (browserType.equalsIgnoreCase("safari")) {
+            if (driver == null) {
+                driver = new SafariDriver();
+                driver.manage()
+                        .timeouts()
+                        .implicitlyWait(5, TimeUnit.SECONDS)
+                        .pageLoadTimeout(30, TimeUnit.SECONDS)
+                        .setScriptTimeout(30, TimeUnit.SECONDS);
+                driver.manage().deleteAllCookies();
+            }
         }
-
     }
 
     public WebDriver getDriver()

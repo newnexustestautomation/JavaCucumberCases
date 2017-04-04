@@ -2,6 +2,7 @@
 
 Functionaliteit: Account aanmaken op de webshop
 
+    @REGRESSIETEST
   Scenario: gebruiker wil ik een account aan kunnen maken
 
     Gegeven het scherm ‘account aanmaken’ zichtbaar is
