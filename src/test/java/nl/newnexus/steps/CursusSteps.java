@@ -12,6 +12,9 @@ import nl.newnexus.database.acties.DatabaseActies;
 import nl.newnexus.pages.createAccount;
 import nl.newnexus.pages.mainPage;
 import org.junit.Assert;
+import org.openqa.selenium.Alert;
+
+import java.util.Random;
 
 /**
  * Created by Tester on 3/28/2017.
@@ -40,12 +43,16 @@ public class CursusSteps  extends Steps{
 
 
     @Als("^ik een accountgegevens invul voor \"([^\"]*)\" \"([^\"]*)\", \"([^\"]*)\" en \"([^\"]*)\" met een standaard adres$")
-    public void ikEenAccountgegevensInvulVoorEnMetEenStandaardAdres(String arg0, String arg1, String arg2, String arg3) throws Throwable {
+    public void ikEenAccountgegevensInvulVoorEnMetEenStandaardAdres(String voornaam, String achternaam, String geboortedatum, String emailadres) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         createAccount create = new createAccount(this.getDriver());
         Assert.assertEquals("",true,create.wordtPaginaGetoond());
-        Assert.assertEquals("",true,create.vulAccountInformatieIn(arg0,arg1,arg2,arg3));
-        this.emailadres = arg3;
+
+        Random rd = new Random();
+        //emailadres = rd.nextInt(1000000)+ emailadres;
+
+        Assert.assertEquals("",true,create.vulAccountInformatieIn(voornaam,achternaam,geboortedatum,emailadres));
+        this.emailadres = emailadres;
     }
 
 
@@ -53,7 +60,8 @@ public class CursusSteps  extends Steps{
     @En("^als ik op de knop ‘aanmaken' klik$")
     public void alsIkOpDeKnopAanmakenKlik() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        //throw new PendingException();
+        createAccount create = new createAccount(this.getDriver());
+        Assert.assertEquals("",true,create.clickOpAanmaken());
     }
 
     @Dan("^komen mijn gegevens in de database$")
@@ -99,5 +107,29 @@ public class CursusSteps  extends Steps{
     public void test() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
 
+    }
+
+    @En("^controleer foutmelding \"([^\"]*)\"$")
+    public void controleerFoutmelding(String foutmelding) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        createAccount create = new createAccount(this.getDriver());
+        Assert.assertEquals("",true,create.checkFoutmelding(foutmelding));
+
+    }
+
+    @En("^controleer foutmelding \"([^\"]*)\" bij leeglaten van veld$")
+    public void controleerFoutmeldingBijLeeglatenVanVeld(String foutmelding) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        Boolean blnResult;
+        Alert alertOK = driver.switchTo().alert();
+        String text = alertOK.getText();
+        if (text.toLowerCase().contains(foutmelding.toLowerCase())) {
+            blnResult = true;
+        } else {
+            blnResult = false;
+        }
+        Assert.assertEquals("Kan foutmelding niet vinden", true, blnResult);
+        System.out.println(text);
+        alertOK.accept();
     }
 }
