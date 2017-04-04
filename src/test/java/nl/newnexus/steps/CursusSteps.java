@@ -23,8 +23,10 @@ public class CursusSteps  extends Steps{
 
     @Before
     public void Start() {
+
         initDriver();
         dbActies = DatabaseActies.getInstance();
+
         if(!dbActies.valid) {
             dbActies.init();
         }
@@ -91,5 +93,11 @@ public class CursusSteps  extends Steps{
         // Write code here that turns the phrase above into concrete actions
         createAccount create = new createAccount(this.getDriver());
         Assert.assertEquals("", true, create.vulPasswordIn(arg0,arg0));
+    }
+
+    @En("^test$")
+    public void test() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+
     }
 }

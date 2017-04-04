@@ -21,7 +21,7 @@ public class Steps
 {
 
     protected static WebDriver driver;
-    private static String browserType = "chhrome";
+    private static String browserType = "chrome";
 
     public Steps()
     {
