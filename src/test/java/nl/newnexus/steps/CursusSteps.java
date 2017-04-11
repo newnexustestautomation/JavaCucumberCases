@@ -12,24 +12,37 @@ import nl.newnexus.database.acties.DatabaseActies;
 import nl.newnexus.pages.createAccount;
 import nl.newnexus.pages.mainPage;
 import org.junit.Assert;
-import org.openqa.selenium.Alert;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Tester on 3/28/2017.
  */
-public class CursusSteps  extends Steps{
+public class CursusSteps  {
 
-    private String emailadres = "";
+
+    protected static WebDriver driver;
+    private static String browserType = "chrome";
+
     private DatabaseActies dbActies;
+    private String emailadres = "";
 
     @Before
     public void Start() {
 
-        initDriver();
-        dbActies = DatabaseActies.getInstance();
+        if (driver == null  ) {
+            System.setProperty("webdriver.chrome.driver", "drivers//chromedriver.exe");
+            driver = new ChromeDriver();
+            driver.manage().timeouts()     .implicitlyWait(5, TimeUnit.SECONDS)
+                    .pageLoadTimeout(30, TimeUnit.SECONDS)
+                    .setScriptTimeout(30, TimeUnit.SECONDS);
+            driver.manage().deleteAllCookies();
+        }
 
+        dbActies = DatabaseActies.getInstance();
         if(!dbActies.valid) {
             dbActies.init();
         }
@@ -38,14 +51,27 @@ public class CursusSteps  extends Steps{
 
     @After
     public void Stop(Scenario scenario) {
-        teardownTest(scenario);
+
+        if (driver != null) {
+            try {
+                if (scenario.isFailed()) {
+                    final byte[] screenshot = ((TakesScreenshot) driver)
+                            .getScreenshotAs(OutputType.BYTES);
+                    scenario.embed(screenshot, "image/png");
+                }
+            } finally {
+                driver.quit();
+            }
+        }
+
+        driver = null;
     }
 
 
     @Als("^ik een accountgegevens invul voor \"([^\"]*)\" \"([^\"]*)\", \"([^\"]*)\" en \"([^\"]*)\" met een standaard adres$")
     public void ikEenAccountgegevensInvulVoorEnMetEenStandaardAdres(String voornaam, String achternaam, String geboortedatum, String emailadres) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        createAccount create = new createAccount(this.getDriver());
+        createAccount create = new createAccount(driver);
         Assert.assertEquals("",true,create.wordtPaginaGetoond());
 
         Random rd = new Random();
@@ -60,7 +86,7 @@ public class CursusSteps  extends Steps{
     @En("^als ik op de knop ‘aanmaken' klik$")
     public void alsIkOpDeKnopAanmakenKlik() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        createAccount create = new createAccount(this.getDriver());
+        createAccount create = new createAccount(driver);
         Assert.assertEquals("",true,create.clickOpAanmaken());
     }
 
@@ -79,17 +105,21 @@ public class CursusSteps  extends Steps{
     public void hetSchermAccountAanmakenZichtbaarIs() throws Throwable {
 
         // Write code here that turns the phrase above into concrete actions
-        this.getDriver().get("http://localhost/catalog");
-        this.getDriver().manage().window().maximize();
+        this.driver.get("http://localhost/catalog");
+        this.driver.manage().window().maximize();
 
-        String title = this.getDriver().getTitle();
+        String title = this.driver.getTitle();
         Assert.assertTrue(title.toLowerCase().contains("newnexus movies and more"));
 
-        mainPage main = new mainPage(this.getDriver());
+        WebElement element = this.driver.findElement(By.linkText("create an account"));
+        if (element.isDisplayed())
+            element.click();
+
+        mainPage main = new mainPage(this.driver);
         Assert.assertEquals("Pagina wordt niet opgstart", true, main.wordtPaginaGetoond());
         main.GoToCreateAnAccount();
 
-        createAccount create = new createAccount(this.getDriver());
+        createAccount create = new createAccount(this.driver);
         Assert.assertEquals("",true,create.wordtPaginaGetoond());
 
         //Assert.assertEquals("Kan niet op de link klikken", true, main.GoToCreateAnAccount());
@@ -99,7 +129,7 @@ public class CursusSteps  extends Steps{
     @En("^het password met \"([^\"]*)\"$")
     public void hetPasswordMet(String arg0) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        createAccount create = new createAccount(this.getDriver());
+        createAccount create = new createAccount(driver);
         Assert.assertEquals("", true, create.vulPasswordIn(arg0,arg0));
     }
 
@@ -107,7 +137,7 @@ public class CursusSteps  extends Steps{
     @En("^controleer foutmelding \"([^\"]*)\"$")
     public void controleerFoutmelding(String foutmelding) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        createAccount create = new createAccount(this.getDriver());
+        createAccount create = new createAccount(driver);
         Assert.assertEquals("",true,create.checkFoutmelding(foutmelding));
 
     }
