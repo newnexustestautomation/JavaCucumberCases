@@ -1,5 +1,6 @@
 package nl.newnexus.steps;
 
+import cucumber.api.DataTable;
 import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -9,12 +10,12 @@ import cucumber.api.java.nl.Dan;
 import cucumber.api.java.nl.En;
 import cucumber.api.java.nl.Gegeven;
 import nl.newnexus.database.acties.DatabaseActies;
-import nl.newnexus.pages.createAccount;
-import nl.newnexus.pages.mainPage;
+import nl.newnexus.pages.CreateAccount;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -46,7 +47,6 @@ public class CursusSteps  {
         if(!dbActies.valid) {
             dbActies.init();
         }
-
     }
 
     @After
@@ -71,11 +71,14 @@ public class CursusSteps  {
     @Als("^ik een accountgegevens invul voor \"([^\"]*)\" \"([^\"]*)\", \"([^\"]*)\" en \"([^\"]*)\" met een standaard adres$")
     public void ikEenAccountgegevensInvulVoorEnMetEenStandaardAdres(String voornaam, String achternaam, String geboortedatum, String emailadres) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        createAccount create = new createAccount(driver);
+        CreateAccount create = new CreateAccount(driver);
         Assert.assertEquals("",true,create.wordtPaginaGetoond());
 
         Random rd = new Random();
-        //emailadres = rd.nextInt(1000000)+ emailadres;
+        if (emailadres.equalsIgnoreCase("#random")) {
+            emailadres = rd.nextInt(1000000)+ "test@test.nl";
+        }
+        //
 
         Assert.assertEquals("",true,create.vulAccountInformatieIn(voornaam,achternaam,geboortedatum,emailadres));
         this.emailadres = emailadres;
@@ -86,7 +89,7 @@ public class CursusSteps  {
     @En("^als ik op de knop ‘aanmaken' klik$")
     public void alsIkOpDeKnopAanmakenKlik() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        createAccount create = new createAccount(driver);
+        CreateAccount create = new CreateAccount(driver);
         Assert.assertEquals("",true,create.clickOpAanmaken());
     }
 
@@ -115,11 +118,7 @@ public class CursusSteps  {
         if (element.isDisplayed())
             element.click();
 
-        mainPage main = new mainPage(this.driver);
-        Assert.assertEquals("Pagina wordt niet opgstart", true, main.wordtPaginaGetoond());
-        main.GoToCreateAnAccount();
-
-        createAccount create = new createAccount(this.driver);
+        CreateAccount create = new CreateAccount(this.driver);
         Assert.assertEquals("",true,create.wordtPaginaGetoond());
 
         //Assert.assertEquals("Kan niet op de link klikken", true, main.GoToCreateAnAccount());
@@ -129,7 +128,7 @@ public class CursusSteps  {
     @En("^het password met \"([^\"]*)\"$")
     public void hetPasswordMet(String arg0) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        createAccount create = new createAccount(driver);
+        CreateAccount create = new CreateAccount(driver);
         Assert.assertEquals("", true, create.vulPasswordIn(arg0,arg0));
     }
 
@@ -137,7 +136,7 @@ public class CursusSteps  {
     @En("^controleer foutmelding \"([^\"]*)\"$")
     public void controleerFoutmelding(String foutmelding) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        createAccount create = new createAccount(driver);
+        CreateAccount create = new CreateAccount(driver);
         Assert.assertEquals("",true,create.checkFoutmelding(foutmelding));
 
     }
@@ -146,21 +145,71 @@ public class CursusSteps  {
     public void controleerFoutmeldingBijLeeglatenVanVeld(String foutmelding) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         Boolean blnResult;
+
         Alert alertOK = driver.switchTo().alert();
         String text = alertOK.getText();
+
         if (text.toLowerCase().contains(foutmelding.toLowerCase())) {
             blnResult = true;
         } else {
             blnResult = false;
         }
         Assert.assertEquals("Kan foutmelding niet vinden", true, blnResult);
-        System.out.println(text);
         alertOK.accept();
     }
 
-    @En("^test$")
-    public void test() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
+    List<List<String>> accounts;
 
+    @Gegeven("^deze accounts zijn aangemaakt:$")
+    public void dezeAccountsZijnAangemaakt(DataTable table) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        accounts = table.raw();
+        CreateAccount create = new CreateAccount(driver);
+
+        for (List<String> account : accounts) {
+
+            Random rd = new Random();
+            String emailadres = rd.nextInt(1000000)+ "test@test.nl";
+
+            if (!account.get(0).equalsIgnoreCase("voornaam")) {
+
+                create.vulAccountInformatieIn(account.get(0), account.get(1), account.get(2), emailadres);
+                create.vulPasswordIn(account.get(3), account.get(3));
+                create.clickOpAanmaken();
+
+                WebElement element = this.driver.findElement(By.id("bodyContent"));
+                if (element.getText().toLowerCase().contains("account has been created"))
+                {
+                    WebElement continueButton = this.driver.findElement(By.id("tdb5"));
+                    continueButton.click();
+                }
+
+                WebElement logOff = this.driver.findElement(By.linkText("Log Off"));
+                if (logOff.isDisplayed())
+                    logOff.click();
+
+                WebElement continueButton = this.driver.findElement(By.id("tdb4"));
+                continueButton.click();
+
+                WebElement createAccount = this.driver.findElement(By.linkText("create an account"));
+                if (createAccount.isDisplayed())
+                    createAccount.click();
+
+
+            }
+        }
+
+    }
+
+
+    @En("^de winkelwagen is leeg$")
+    public void deWinkelwagenIsLeeg() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        WebElement shopping = this.driver.findElement(By.linkText("Cart Contents"));
+
+        if (shopping.isDisplayed()) {
+            shopping.click();
+            Assert.assertTrue("Shoppingcart is not empty",this.driver.findElement(By.id("bodyContent")).getText().toLowerCase().contains("shopping cart is empty"));
+        }
     }
 }

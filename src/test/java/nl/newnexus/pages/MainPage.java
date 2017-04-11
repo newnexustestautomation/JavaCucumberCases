@@ -8,7 +8,7 @@ import org.openqa.selenium.support.PageFactory;
 /**
  * Created by Tester on 3/28/2017.
  */
-public class mainPage {
+public class MainPage {
 
     private WebDriver driver;
 
@@ -18,7 +18,7 @@ public class mainPage {
     @FindBy(linkText = "create an account")
     private WebElement createAccount;
 
-    public mainPage(WebDriver driver) {
+    public MainPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }

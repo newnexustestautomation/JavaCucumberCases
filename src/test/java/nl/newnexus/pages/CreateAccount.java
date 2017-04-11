@@ -12,7 +12,7 @@ import java.util.Random;
 /**
  * Created by Tester on 3/28/2017.
  */
-public class createAccount {
+public class CreateAccount {
 
     private WebDriver driver;
 
@@ -67,7 +67,7 @@ public class createAccount {
     @FindBy(id="tdb4")
     private WebElement continuebutton;
 
-    public createAccount(WebDriver driver) {
+    public CreateAccount(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
