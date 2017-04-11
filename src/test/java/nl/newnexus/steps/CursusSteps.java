@@ -103,11 +103,6 @@ public class CursusSteps  extends Steps{
         Assert.assertEquals("", true, create.vulPasswordIn(arg0,arg0));
     }
 
-    @En("^test$")
-    public void test() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-
-    }
 
     @En("^controleer foutmelding \"([^\"]*)\"$")
     public void controleerFoutmelding(String foutmelding) throws Throwable {
@@ -131,5 +126,11 @@ public class CursusSteps  extends Steps{
         Assert.assertEquals("Kan foutmelding niet vinden", true, blnResult);
         System.out.println(text);
         alertOK.accept();
+    }
+
+    @En("^test$")
+    public void test() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+
     }
 }

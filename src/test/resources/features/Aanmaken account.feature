@@ -12,6 +12,7 @@ Functionaliteit: Account aanmaken op de webshop
       En als ik op de knop ‘aanmaken' klik
       En controleer foutmelding "e-mail address already exists"
 
+
     Dan komen mijn gegevens in de database
       En kan ik inloggen
 
