@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 public class Steps
 {
-
     protected static WebDriver driver;
     private static String browserType = "chrome";
+
 
     public Steps()
     {
@@ -60,7 +60,6 @@ public class Steps
 
             }
 
-
         } else if (browserType.equalsIgnoreCase("firefox")) {
 
 
@@ -85,7 +84,6 @@ public class Steps
     protected void destroyDriver(Scenario scenario)
     {
         if (driver != null) {
-
             try {
                 if (scenario.isFailed()) {
                     final byte[] screenshot = ((TakesScreenshot) driver)
